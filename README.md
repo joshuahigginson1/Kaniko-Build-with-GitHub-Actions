@@ -9,6 +9,8 @@
 
 # Kaniko Builds on GitHub Actions
 
+__Updated 9th July 2024__
+
 This directory contains a sample pipeline to push docker images to GitHub Container Registry, using Kaniko, a container tool by Google.
 
 ## What's the Problem?
@@ -41,6 +43,13 @@ env:
   DOCKERFILE_PATH: path/to/Dockerfile  # The path to your Dockerfile, in relation to the root directory of this repository.
 ```
 
+After making a push to your 'main' branch, after making a change to either the Dockerfile or the GitHub workflow, a new image will build.
+
+In the homepage of your GitHub repository, look in the right-hand menu bar for the `Releases` tab. You should see your new image.
+
+![A screenshot of the GitHub Releases Menu.](.README_IMAGES/release_example.png)
+
+
 ### Modifying this Action
 
 Our Docker image will only build on a push to the `main` branch. To alter this behaviour, you can edit the `on` statement. Find out more about the 'on' action reference [here.][6]
@@ -57,6 +66,7 @@ on:
 
 ## Future Improvements
 
+- A more advanced Dockerfile example, rather than just a plain Python image.
 - Use Trivy to scan our Docker Image before pushing it to GHCR with Crane.
 - Use Trivy to run SAST on our Dockerfile for misconfigurations.
 - Use renovatebot to detect version changes to base Docker images.
