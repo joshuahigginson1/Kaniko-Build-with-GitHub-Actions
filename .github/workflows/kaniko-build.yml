@@ -18,8 +18,8 @@ jobs:
     container:
       image: gcr.io/kaniko-project/executor:v1.20.0-debug
     permissions:
-      contents: read # read the repository
-      packages: write # to push to GHCR, omit for other container registry. https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#publishing-a-package-using-an-action
+      contents: read  # Permissions to read the GitHub Repository.
+      packages: write  # Permissions to push to GHCR. https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#publishing-a-package-using-an-action
 
     steps:
       - name: Build and Push Image to GHCR with kaniko
@@ -34,7 +34,7 @@ jobs:
           }
           EOF
 
-          /kaniko/executor --dockerfile="./app/Dockerfile" \
+          /kaniko/executor --dockerfile="./Dockerfile" \
             --context="${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}"  \
             --destination="$GH_REGISTRY/$IMAGE_NAME:$(echo ${GITHUB_SHA} | head  -c 7)" \
             ${{ env.KANIKO_CACHE_ARGS }} \

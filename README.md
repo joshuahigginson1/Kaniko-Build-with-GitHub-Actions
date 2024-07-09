@@ -39,6 +39,8 @@ First, copy the .github/workflows directory, as well as it's contents, to your o
 - Use Trivy to scan our Docker Image before pushing it to GHCR with Crane.
 - Use Trivy to run SAST on our Dockerfile for misconfigurations.
 - Use renovatebot to detect version changes to base Docker images.
+- Create ARM and x86-64 Images.
+- Incorperate Private runners with runs-on.com.
 
 ## Authors
 
