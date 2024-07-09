@@ -24,4 +24,22 @@ Madhu Akula has written an amazing series of articles explaining Kubernetes issu
 
 ## What is Kaniko?
 
-[Kaniko][3] is a tool written by Google (though not *officially* supported commercially), which utilises user space 
+[Kaniko][3] is a tool written by Google (though not *officially* supported commercially), which utilises Linux userspace to execute each of the commands inside of a Docker container, rather than the host system itself. It is widely recommended for use on the [GitLab platform][1], but not on GitHub.
+
+This repository utilises [Rollson's Medium Article][2] to build an example Docker Image using Kaniko on GitHub Actions.
+
+
+## Using this Repository
+
+TO WRITE
+
+
+## Future Improvements
+
+- Use Trivy to scan our Docker Image before pushing it to GHCR with Crane.
+- Use Trivy to run SAST on our Dockerfile for misconfigurations.
+- Use renovatebot to detect version changes to base Docker images.
+
+## Authors
+
+**Josh Higginson** - _Technical Platforms Lead_
