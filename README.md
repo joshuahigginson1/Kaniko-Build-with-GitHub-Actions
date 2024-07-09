@@ -37,7 +37,7 @@ First, copy the .github/workflows directory, as well as it's contents, to your o
 
 Configure the two 'env' values according to the Dockerfile you would like to build:
 
-```
+```yaml
 env:
   IMAGE_NAME: <your-kaniko-image>  # The name of the image, to be written to GHCR as.
   DOCKERFILE_PATH: path/to/Dockerfile  # The path to your Dockerfile, in relation to the root directory of this repository.
@@ -45,12 +45,12 @@ env:
 
 After making a push to your 'main' branch, after making a change to either the Dockerfile or the GitHub workflow, a new image will build.
 
-In the homepage of your GitHub repository, look in the right-hand menu bar for the `Releases` tab. You should see your new image.
 
 ![A screenshot of the GitHub Releases Menu.](.README_IMAGES/release_example.png)
 
+In the homepage of your GitHub repository, look in the right-hand menu bar for the `Releases` tab. You should see your new image.
 
-### Modifying this Action
+### Modifying this Action
 
 Our Docker image will only build on a push to the `main` branch. To alter this behaviour, you can edit the `on` statement. Find out more about the 'on' action reference [here.][6]
 
