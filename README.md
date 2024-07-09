@@ -14,7 +14,7 @@ This directory contains a sample pipeline to push docker images to GitHub Contai
 
 [Kubernetes OWASP Top 10][5] states that DIND is 'K01' - The top cause of Kubernetes exploitation. In this example repository, we want to build a docker image inside of another docker image. This is called running 'Docker in Docker' or 'DIND'. A docker container *cannot* run it's own Docker Daemon, instead, it must hook into the parent Daemon via a UNIX socket.
 
-<Insert Image Here>
+![A diagram demonstrating a malicious Supply Chain Attack on a Docker Host.](.README_IMAGES/dind_example.png)
 
 Building an image using the Docker Daemon requires privileged access to it - You may have come across this before in another guise when running Docker on Linux, requiring the addition of a Docker User to the SUDOERS file.
 
