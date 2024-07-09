@@ -13,6 +13,17 @@ __Updated 9th July 2024__
 
 This directory contains a sample pipeline to push docker images to GitHub Container Registry, using Kaniko, a container tool by Google.
 
+## Table of Contents
+
+- [Kaniko Builds on GitHub Actions](#kaniko-builds-on-github-actions)
+  - [Table of Contents](#table-of-contents)
+  - [What's the Problem?](#whats-the-problem)
+  - [What is Kaniko?](#what-is-kaniko)
+  - [Installation and Usage](#installation-and-usage)
+    - [Modifying this Action](#modifying-this-action)
+  - [Future Improvements](#future-improvements)
+  - [Authors](#authors)
+
 ## What's the Problem?
 
 [Kubernetes OWASP Top 10][5] states that DIND is 'K01' - The top cause of Kubernetes exploitation. In this example repository, we want to build a docker image inside of another docker image. This is called running 'Docker in Docker' or 'DIND'. A docker container *cannot* run it's own Docker Daemon, instead, it must hook into the parent Daemon via a UNIX socket.
@@ -45,7 +56,6 @@ env:
 
 After making a push to your 'main' branch, after making a change to either the Dockerfile or the GitHub workflow, a new image will build.
 
-
 ![A screenshot of the GitHub Releases Menu.](.README_IMAGES/release_example.png)
 
 In the homepage of your GitHub repository, look in the right-hand menu bar for the `Releases` tab. You should see your new image.
@@ -54,7 +64,7 @@ In the homepage of your GitHub repository, look in the right-hand menu bar for t
 
 Our Docker image will only build on a push to the `main` branch. To alter this behaviour, you can edit the `on` statement. Find out more about the 'on' action reference [here.][6]
 
-```
+```yaml
 on:
   push:
     branches:
