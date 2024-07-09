@@ -10,7 +10,8 @@ on:
       - ".github/workflows/**"
 
 env:
-  KANIKO_CACHE_ARGS: "--cache=true --cache-copy-layers=true --cache-ttl=24h"
+  IMAGE_NAME: kaniko-python  # The name of the image, to be written to GHCR as.
+  DOCKERFILE_PATH: ./Dockerfile  # The path to your Dockerfile, in relation to the root directory of this repository.
 
 jobs:
   build-to-ghcr:
@@ -22,7 +23,7 @@ jobs:
       packages: write  # Permissions to push to GHCR. https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#publishing-a-package-using-an-action
 
     steps:
-      - name: Build and Push Image to GHCR with kaniko
+      - name: Build x86 Image
         run: |
           cat <<EOF > /kaniko/.docker/config.json
           {
@@ -34,13 +35,12 @@ jobs:
           }
           EOF
 
-          /kaniko/executor --dockerfile="./Dockerfile" \
+          /kaniko/executor --dockerfile="$DOCKERFILE_PATH" \
             --context="${{ github.repositoryUrl }}#${{ github.ref }}#${{ github.sha }}"  \
-            --destination="$GH_REGISTRY/$IMAGE_NAME:$(echo ${GITHUB_SHA} | head  -c 7)" \
-            ${{ env.KANIKO_CACHE_ARGS }} \
-            --push-retry 5 
-        env: # needed to authenticate to github and download the repo
+            --destination="ghcr.io/${{ github.repository }}/$IMAGE_NAME:$(echo ${GITHUB_SHA} | head -c 7)" \
+            --cache=true --cache-copy-layers=true --cache-ttl=24h --push-retry 5 \
+            --build-arg=ARCH=amd64
+
+        env: # Needed to authenticate to github and download the repo. We don't hardcode these values.
           GIT_USERNAME: ${{ github.actor }} 
           GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-          GH_REGISTRY: "ghcr.io"
-          IMAGE_NAME: "${{ github.repository }}/nginx"

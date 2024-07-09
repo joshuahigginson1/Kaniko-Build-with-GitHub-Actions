@@ -5,6 +5,7 @@
 [3]: https://github.com/GoogleContainerTools/kaniko   "Google Container Tools"
 [4]: https://madhuakula.com/kubernetes-goat/docs/scenarios/scenario-2/docker-in-docker-exploitation-in-kubernetes-containers/   "KubeGoat"
 [5]: https://owasp.org/www-project-kubernetes-top-ten/   "OWASP Kubernetes Top 10"
+[6]: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on   "GitHub Actions ON reference"
 
 # Kaniko Builds on GitHub Actions
 
@@ -26,20 +27,40 @@ Madhu Akula has written an amazing series of articles explaining Kubernetes issu
 
 [Kaniko][3] is a tool written by Google (though not *officially* supported commercially), which utilises Linux userspace to execute each of the commands inside of a Docker container, rather than the host system itself. It is widely recommended for use on the [GitLab platform][1], but not on GitHub.
 
-This repository utilises [Rollson's Medium Article][2] to build an example Docker Image using Kaniko on GitHub Actions.
-
+This repository utilises [Rollson's Medium Article][2] to build an example Docker Image using Kaniko on GitHub Actions, on every push to the 'main' branch.
 
 ## Installation and Usage
 
 First, copy the .github/workflows directory, as well as it's contents, to your own repository.
 
+Configure the two 'env' values according to the Dockerfile you would like to build:
+
+```
+env:
+  IMAGE_NAME: <your-kaniko-image>  # The name of the image, to be written to GHCR as.
+  DOCKERFILE_PATH: path/to/Dockerfile  # The path to your Dockerfile, in relation to the root directory of this repository.
+```
+
+### Modifying this Action
+
+Our Docker image will only build on a push to the `main` branch. To alter this behaviour, you can edit the `on` statement. Find out more about the 'on' action reference [here.][6]
+
+```
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "Dockerfile"
+      - ".github/workflows/**"
+```
 
 ## Future Improvements
 
 - Use Trivy to scan our Docker Image before pushing it to GHCR with Crane.
 - Use Trivy to run SAST on our Dockerfile for misconfigurations.
 - Use renovatebot to detect version changes to base Docker images.
-- Create ARM and x86-64 Images.
+- Create both ARM and x86-64 Images.
 - Incorperate Private runners with runs-on.com.
 
 ## Authors
