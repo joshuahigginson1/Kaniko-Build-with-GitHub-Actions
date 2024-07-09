@@ -29,9 +29,9 @@ Madhu Akula has written an amazing series of articles explaining Kubernetes issu
 This repository utilises [Rollson's Medium Article][2] to build an example Docker Image using Kaniko on GitHub Actions.
 
 
-## Using this Repository
+## Installation and Usage
 
-TO WRITE
+First, copy the .github/workflows directory, as well as it's contents, to your own repository.
 
 
 ## Future Improvements
