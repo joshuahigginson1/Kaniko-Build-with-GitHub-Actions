@@ -37,11 +37,9 @@ jobs:
 
       - name: Trivy File System Scan
         run: |
-          trivy fs --scanners vuln,config,secret,misconfig ${{ github.workspace }} --format sarif -o trivy-fs-scan.sarif
 
-          cat trivy-fs-scan.sarif
-
-          ls ${{ github.workspace }}
+          echo "TODO: Fetch Current Directory"
+          trivy fs --scanners vuln,license,secret,misconfig ${{ github.workspace }} --format sarif -o trivy-fs-scan.sarif
 
           echo "Constructing payload for upload to GitHub."
           echo '{"commit_sha":"${{ github.sha }}","ref":"${{ github.ref }}","sarif":"'$(gzip -c trivy-fs-scan.sarif | base64 -w0)'"}' > sarif_payload.json
