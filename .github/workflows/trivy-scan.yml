@@ -45,7 +45,7 @@ jobs:
           echo "Uploading SARIF payload to GitHub."
           wget --method=POST \
             --header "Accept: application/vnd.github.v3+json" \
-            --header "Authorization: Bearer $GITHUB_TOKEN" \
+            --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
             --header "Content-Type: application/json" \
             --body-file=sarif_payload.json \
             --content-on-error \
