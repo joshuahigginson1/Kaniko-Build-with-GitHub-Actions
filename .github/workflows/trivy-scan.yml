@@ -23,7 +23,7 @@ jobs:
       TRIVY_VERSION: 0.53.0
 
     permissions:
-      contents: read  # Permissions to read the GitHub Repository.
+      security-events: write  # Permissions to write to the GitHub Repository Security Config.
 
     steps:
 
