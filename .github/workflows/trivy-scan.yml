@@ -1,6 +1,12 @@
 name: Trivy Scan Workflow
 run-name: Trivy Scan Workflow by @${{ github.actor }}
 
+# We want to run our scan on all pushes.
+on:
+  push:
+    branches:
+      - "*"
+
 jobs:
 
   # ============= #
