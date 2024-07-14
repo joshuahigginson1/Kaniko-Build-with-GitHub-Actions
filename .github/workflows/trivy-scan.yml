@@ -1,0 +1,40 @@
+name: Trivy Scan Workflow
+run-name: Trivy Scan Workflow by @${{ github.actor }}
+
+jobs:
+
+  # ============= #
+  #   SAST SCAN   #
+  # ============= #
+
+  # This job scans our working directory prior to building a Docker image to ensure that the repository's contents
+  # is as safe as possible before exposing an image to your image registry.
+
+  trivy-sast-scan:
+    runs-on: ubuntu-24.04
+
+    env:
+      TRIVY_VERSION: 0.42.0
+
+    permissions:
+      contents: read  # Permissions to read the GitHub Repository.
+
+    steps:
+
+      # Installs Trivy on host runner. NOTE: Sudo is required here, GitHub actions use passwordless sudo.
+      - name: Install Trivy
+        run: |
+          sudo apt update
+          wget https://github.com/aquasecurity/trivy/releases/download/v$IMAGE_NAME/trivy_$IMAGE_NAME_Linux-64bit.deb
+          sudo dpkg -i trivy_$IMAGE_NAME_Linux-64bit.deb
+          echo "TODO: Cache Trivy Database"
+
+      - name: Trivy File System Scan
+        run: |
+          trivy fs --scanners misconfig ${{ github.workspace }}
+          echo "TODO: Fail on Criticals"
+          echo "TODO: Export Reults as Sarif"
+
+      - name: Upload Sarif Results
+        run: |
+          echo "TODO: Upload Sarif Results"

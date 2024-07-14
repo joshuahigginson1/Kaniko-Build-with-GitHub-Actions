@@ -23,6 +23,7 @@ jobs:
       packages: write  # Permissions to push to GHCR. https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#publishing-a-package-using-an-action
 
     steps:
+
       - name: Build x86 Image
         run: |
           cat <<EOF > /kaniko/.docker/config.json

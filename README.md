@@ -6,25 +6,38 @@
 [4]: https://madhuakula.com/kubernetes-goat/docs/scenarios/scenario-2/docker-in-docker-exploitation-in-kubernetes-containers/   "KubeGoat"
 [5]: https://owasp.org/www-project-kubernetes-top-ten/   "OWASP Kubernetes Top 10"
 [6]: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on   "GitHub Actions ON reference"
+[7]: https://csrc.nist.gov/pubs/sp/800/190/final "NIST SP 800-190 Specification"
 
 # Kaniko Builds on GitHub Actions
 
 __Updated 9th July 2024__
 
-This directory contains a sample pipeline to push docker images to GitHub Container Registry, using Kaniko, a container tool by Google.
+This directory contains a sample pipeline to securely push docker images to GitHub Container Registry.
+
+It uses three technologies:
+
+- Kaniko, a container building tool by Google.
+- Trivy, by Aquasec, an Open-Source Vulnerability Scanner.
+- Crane, a container push tool by Google.
 
 ## Table of Contents
 
 - [Kaniko Builds on GitHub Actions](#kaniko-builds-on-github-actions)
   - [Table of Contents](#table-of-contents)
-  - [What's the Problem?](#whats-the-problem)
-  - [What is Kaniko?](#what-is-kaniko)
+  - [Container Building](#container-building)
+    - [What's the Problem?](#whats-the-problem)
+    - [What is Kaniko?](#what-is-kaniko)
+  - [Vulnerability Scanning](#vulnerability-scanning)
+    - [Trivy](#trivy)
   - [Installation and Usage](#installation-and-usage)
     - [Modifying this Action](#modifying-this-action)
   - [Future Improvements](#future-improvements)
   - [Authors](#authors)
 
-## What's the Problem?
+
+## Container Building
+
+### What's the Problem?
 
 [Kubernetes OWASP Top 10][5] states that DIND is 'K01' - The top cause of Kubernetes exploitation. In this example repository, we want to build a docker image inside of another docker image. This is called running 'Docker in Docker' or 'DIND'. A docker container *cannot* run it's own Docker Daemon, instead, it must hook into the parent Daemon via a UNIX socket.
 
@@ -36,11 +49,27 @@ We often build docker containers from other public images, or build docker conta
 
 Madhu Akula has written an amazing series of articles explaining Kubernetes issues in detail, and I would recommend taking the time to [follow this tutorial through][4], just to see how *scary* and *straightforward* it is for a rogue package to exploit a UNIX socket misconfiguration and escape the host system to view other containers.
 
-## What is Kaniko?
+The most commonly starred GitHub Action for building Docker Images utilises Moby BuildKit and QEMU to address the above issue, and this functionality is obscured to a user over layers of dependent composite actions. Instead, we will use Kaniko to simplify the process of building Docker images.
+
+### What is Kaniko?
 
 [Kaniko][3] is a tool written by Google (though not *officially* supported commercially), which utilises Linux userspace to execute each of the commands inside of a Docker container, rather than the host system itself. It is widely recommended for use on the [GitLab platform][1], but not on GitHub.
 
 This repository utilises [Rollson's Medium Article][2] to build an example Docker Image using Kaniko on GitHub Actions, on every push to the 'main' branch.
+
+## Vulnerability Scanning
+
+NIST [Special Publication 800-190][7] provides a number of recommendations for securely containerising applications. Trivy is an Open Source Container Security tool by Aquasec which can be used to address a number of these:
+
+- Image Vulnerabilities
+- Image Configuration Defects
+- Embedded Cleartext Secrets
+
+### Trivy
+
+Trivy offers solutions to the above through it's ability to 'scan' files and file metadata. It also offers additional features, such as licence verification and the generation of reports which can be uploaded to GitHub in 'Serif' format.
+
+In this repository, we build the Trivy scanning mechanisms by hand, rather than relying on third-party actions.
 
 ## Installation and Usage
 
