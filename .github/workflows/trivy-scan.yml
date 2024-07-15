@@ -44,7 +44,9 @@ jobs:
           sudo dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb
           sudo rm trivy_${TRIVY_VERSION}_Linux-64bit.deb
 
-          echo "TODO: Cache Trivy Database"
+          echo "TODO: Cache Trivy Database & installer."
+
+          echo "${{ env.ACTIONS_CACHE_URL }}"
 
       # This job will never fail. It is designed to ALWAYS upload results.
       - name: Trivy File System Reporting Scan
@@ -68,8 +70,6 @@ jobs:
       # Rather than re-run our Trivy scan, we can simply use GREP to count for any issues.
       - name: Trivy Failure Gate
         run: |
-          # cat trivy-fs-scan.sarif
-
           echo "Checking for CRITICAL issues..."
           if grep -qE '\nSeverity: HIGH\n' trivy-fs-scan.sarif; then
             echo "CRITICAL severity issues found in Trivy scan results. Please check the GitHub Code Scanning page for details."

@@ -7,10 +7,13 @@
 [5]: https://owasp.org/www-project-kubernetes-top-ten/   "OWASP Kubernetes Top 10"
 [6]: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on   "GitHub Actions ON reference"
 [7]: https://csrc.nist.gov/pubs/sp/800/190/final "NIST SP 800-190 Specification"
+[8]: https://github.com/actions/checkout "Git Checkout Actions Repository"
+[9]: https://github.com/actions/cache "Git Cache Actions Repository"
+[10]: https://github.com/actions/toolkit "Git Actions Toolkit Repository"
 
 # Kaniko Builds on GitHub Actions
 
-__Updated 9th July 2024__
+__Updated 15th July 2024__
 
 This directory contains a sample pipeline to securely push docker images to GitHub Container Registry.
 
@@ -19,6 +22,10 @@ It uses three technologies:
 - Kaniko, a container building tool by Google.
 - Trivy, by Aquasec, an Open-Source Vulnerability Scanner.
 - Crane, a container push tool by Google.
+
+One of my biggest gripes with GitHub Actions for pipeline development is that a the most common 'Community Actions' are overcomplicated for running the most simple of jobs. The most simple of this is simply [cloning the current repository][8]! Hundreds of lines of node.js, just to run the command `git clone`.
+
+A more serious example is the GitHub Action for caching files in a GitHub Workflow. Developers should be able to understand where potentially sensitive or private artifacts are being uploaded to in a single glance - your company may have strict data residency requirements. The GitHub repository for the [Cache action][9] does not contain an address at all! Instead, you have to dig deeper into the TypeScript source code to realise that this functionality is stored in a [second dependent library][10] - The toolkit actions repository, which then references an undocumented environment variable $ACTIONS_CACHE_URL. Developers unknowingly introduce significant amounts of technical debt into their project, and pave the way for supply chain attacks, whereas a simple custom cache can be achieved with a few lines of shell scripting.
 
 ## Table of Contents
 
@@ -65,11 +72,23 @@ NIST [Special Publication 800-190][7] provides a number of recommendations for s
 - Image Configuration Defects
 - Embedded Cleartext Secrets
 
+...And More:
+
+- Identifying licenses in third-party dependencies.
+- In-toto attestation verification.
+
 ### Trivy
 
 Trivy offers solutions to the above through it's ability to 'scan' files and file metadata. It also offers additional features, such as licence verification and the generation of reports which can be uploaded to GitHub in 'Serif' format.
 
-In this repository, we build the Trivy scanning mechanisms by hand, rather than relying on third-party actions.
+In this repository, we run Trivy twice.
+
+First, we run it on the underlying file system and codebase, which will validate the Dockerfile for image configuration defects, Licensing issues, and vulnerabilities in third-party libraries.
+
+Secondly, we run Trivy on our build image, to identify vulnerabilities in the virtualised container OS, and for any exposed secrets.
+
+This report is then uploaded to GitHub in SERIF format, so that it can be viewed inside of the GitHub UI.
+
 
 ## Installation and Usage
 
@@ -107,10 +126,10 @@ on:
 
 - A more advanced Dockerfile example, rather than just a plain Python image.
 - Use Trivy to scan our Docker Image before pushing it to GHCR with Crane.
-- Use Trivy to run SAST on our Dockerfile for misconfigurations.
-- Use renovatebot to detect version changes to base Docker images.
+- Add Cosign / In-toto attestation.
+- Use renovatebot to detect version changes to base Docker images and version changes inside of our github workflow itself.
 - Create both ARM and x86-64 Images.
-- Incorperate Private runners with runs-on.com.
+- Incorperate Private runners ~ Potentially a New Repo?
 
 ## Authors
 
