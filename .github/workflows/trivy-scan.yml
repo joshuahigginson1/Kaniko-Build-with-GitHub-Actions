@@ -77,8 +77,8 @@ jobs:
           fi
           echo "No CRITICAL issues found by Trivy!"
           
-          echo "Checking for HIGH or CRITICAL issues..."
-          if grep -qE 'Severity: HIGH|Severity: CRITICAL' trivy-fs-scan.sarif; then
+          echo "Checking for HIGH issues..."
+          if grep -qE 'Severity: HIGH' trivy-fs-scan.sarif; then
             echo "HIGH severity issues found in Trivy scan results. Please check the GitHub Code Scanning page for details."
             exit 1
           fi
