@@ -31,7 +31,7 @@ jobs:
       - name: Git Clone
         run: |
 
-          git clone --depth 1 --branch ${{ github.ref_name }} $(echo $ ${{ github.repositoryUrl }} | sed 's|git://|https://|') .    
+          git clone --depth 1 --branch ${{ github.ref_name }} $(echo ${{ github.repositoryUrl }} | sed 's|git://|https://|') .    
 
       # Installs Trivy on host runner. NOTE: Sudo is required here, GitHub actions use passwordless sudo.
       - name: Install Trivy
