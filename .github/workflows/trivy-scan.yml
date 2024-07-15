@@ -68,6 +68,8 @@ jobs:
       # Rather than re-run our Trivy scan, we can simply use GREP to count for any issues.
       - name: Trivy Failure Gate
         run: |
+          cat trivy-fs-scan.sarif
+          
           echo "Checking for CRITICAL issues..."
           if grep -qE '"Severity": "CRITICAL"' trivy-fs-scan.sarif; then
             echo "CRITICAL severity issues found in Trivy scan results. Please check the GitHub Code Scanning page for details."
