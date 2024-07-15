@@ -30,14 +30,20 @@ jobs:
       # Clones the current repository without the need for an external action.
       - name: Git Clone
         run: |
-          git clone --depth 1 --branch ${{ github.ref_name }} ${{ github.repositoryUrl }} .    
+
+          git clone --depth 1 --branch ${{ github.ref_name }} $(echo $ ${{ github.repositoryUrl }} | sed 's|git://|https://|') .    
 
       # Installs Trivy on host runner. NOTE: Sudo is required here, GitHub actions use passwordless sudo.
       - name: Install Trivy
         run: |
+          echo "Updating APT cache..."
           sudo apt update
+
+          echo "Installing Trivy..."
           wget -q https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.deb
           sudo dpkg -i trivy_${TRIVY_VERSION}_Linux-64bit.deb
+          sudo rm trivy_${TRIVY_VERSION}_Linux-64bit.deb
+
           echo "TODO: Cache Trivy Database"
 
       - name: Trivy File System Scan
@@ -53,7 +59,7 @@ jobs:
           echo "Uploading SARIF payload to GitHub."
 
           echo "TODO: Always upload, even if previous scan job fails."
-          
+
           wget --method=POST \
             --header "Accept: application/vnd.github.v3+json" \
             --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
