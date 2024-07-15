@@ -69,7 +69,9 @@ jobs:
       - name: Trivy Failure Gate
         run: |
           echo "Checking for CRITICAL issues..."
-          grep -qE '"Severity": "CRITICAL"' trivy-fs-scan.sarif && { echo "CRITICAL severity issues found in Trivy scan results."; exit 1; }
+          grep -qE '"Severity": "CRITICAL"' trivy-fs-scan.sarif && echo "CRITICAL severity issues found in Trivy scan results. Please check the GitHub Code Scanning page for details." && exit 1
         
           echo "Checking for HIGH or CRITICAL issues..."
-          grep -qE '"Severity": "HIGH"|"Severity": "CRITICAL"' trivy-fs-scan.sarif && { echo "HIGH severity issues found in Trivy scan results."; exit 1; }
+          grep -qE '"Severity": "HIGH"|"Severity": "CRITICAL"' trivy-fs-scan.sarif && echo "HIGH severity issues found in Trivy scan results. Please check the GitHub Code Scanning page for details." && exit 1
+
+          echo "No HIGH or CRITICAL issues found by Trivy!"
