@@ -27,6 +27,11 @@ jobs:
 
     steps:
 
+      # Clones the current repository without the need for an external action.
+      - name: Git Clone
+        run: |
+          git clone --depth 1 --branch ${{ github.ref_name }} ${{ github.repositoryUrl }} .    
+
       # Installs Trivy on host runner. NOTE: Sudo is required here, GitHub actions use passwordless sudo.
       - name: Install Trivy
         run: |
@@ -37,14 +42,18 @@ jobs:
 
       - name: Trivy File System Scan
         run: |
-
-          echo "TODO: Fetch Current Directory"
+          echo "Commencing Trivy Scan..."
           trivy fs --scanners vuln,license,secret,misconfig ${{ github.workspace }} --format sarif -o trivy-fs-scan.sarif
+          
+          echo "TODO: Fail on Criticals"
 
           echo "Constructing payload for upload to GitHub."
           echo '{"commit_sha":"${{ github.sha }}","ref":"${{ github.ref }}","sarif":"'$(gzip -c trivy-fs-scan.sarif | base64 -w0)'"}' > sarif_payload.json
 
           echo "Uploading SARIF payload to GitHub."
+
+          echo "TODO: Always upload, even if previous scan job fails."
+          
           wget --method=POST \
             --header "Accept: application/vnd.github.v3+json" \
             --header "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
@@ -52,5 +61,3 @@ jobs:
             --body-file=sarif_payload.json \
             --content-on-error \
             "https://api.github.com/repos/${{ github.repository }}/code-scanning/sarifs"
-
-          echo "TODO: Fail on Criticals"
